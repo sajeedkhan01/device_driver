@@ -1,0 +1,61 @@
+/***************************************************************************//**
+ *  \section Permissions and Parameter Types
+ *
+ *  ## Available Permissions for Module Parameters:
+ *
+ *  The permissions for module parameters are defined using the following macros:
+ *  - **S_IRUSR**: Read permission for the file owner.
+ *  - **S_IWUSR**: Write permission for the file owner.
+ *  - **S_IRGRP**: Read permission for the group associated with the file.
+ *  - **S_IWGRP**: Write permission for the group associated with the file.
+ *  - **S_IROTH**: Read permission for others (users not in the owner or group).
+ *  - **S_IWOTH**: Write permission for others.
+ *  - **S_IRUGO**: Read permission for all users (user, group, and others).
+ *  - **S_IWUSR**: Write permission for all users.
+ *
+ *  ## Types of Parameters:
+ *
+ *  Kernel module parameters are declared using different types, depending on the data being passed:
+ *  
+ *  - **Integer (`int`)**:
+ *    - Used to store integer values.
+ *    - Example: `module_param(valueETX, int, S_IRUSR | S_IWUSR);`
+ *    - This declares a module parameter of type `int` named `valueETX`, with read and write permissions for the owner.
+ *  
+ *  - **String (`char *`)**:
+ *    - Used to store string values (character pointers).
+ *    - Example: `module_param(nameETX, charp, S_IRUSR | S_IWUSR);`
+ *    - This declares a module parameter of type `char *` (string) named `nameETX`.
+ *  
+ *  - **Array (`int[]`)**:
+ *    - Used to store arrays of data.
+ *    - Example: `module_param_array(arr_valueETX, int, NULL, S_IRUSR | S_IWUSR);`
+ *    - This declares a module parameter that can accept an array of integers.
+ *  
+ *  - **Callback (`module_param_cb`)**:
+ *    - Allows the definition of custom getter and setter functions for module parameters.
+ *    - Example: `module_param_cb(cb_valueETX, &my_param_ops, &cb_valueETX, S_IRUGO | S_IWUSR);`
+ *    - This declares a parameter `cb_valueETX` with a callback function to handle changes.
+ *
+ *  ## Practical Example of Permissions:
+ *  - `S_IRUSR | S_IWUSR`: The parameter can be read and written by the owner.
+ *  - `S_IRUGO | S_IWUSR`: The parameter can be read by all users, but only written by the owner.
+ *  - `S_IRUSR`: The parameter can only be read by the owner.
+ *  
+ *  ## Callback Usage:
+ *  - `module_param_cb(cb_valueETX, &my_param_ops, &cb_valueETX, S_IRUGO|S_IWUSR);`
+ *    This registers the callback function `notify_param` for the parameter `cb_valueETX`. The callback is called when the parameter is modified.
+ *  
+ *  ## Summary:
+ *  - The kernel module system provides flexible ways to interact with parameters at runtime, and permissions allow control over who can read or modify them.
+ *
+ *******************************************************************************/
+
+Loading the Driver
+sudo insmod hello_world_module.ko valueETX=14 nameETX="EmbeTronicX" arr_valueETX=100,102,104,106
+
+Verify the parameters by using dmesg
+sudo sh -c "echo 13 > /sys/module/hello_world_module/parameters/cb_valueETX"
+Type sudo su. Then enter the password if it asks. Then do echo 13 > /sys/module/hello_world_module/parameters/cb_valueETX
+
+
